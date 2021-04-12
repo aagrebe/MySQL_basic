@@ -10,10 +10,10 @@ START TRANSACTION; -- начало транзакции
 
 -- SELECT @last_user_id := last_insert_id(); - так выдает только 1
 
-SELECT @last_user_id := (SELECT MAX(id) FROM users) + 1;
+SELECT @last_user_id := (SELECT MAX(id) FROM shop.users) + 1;
 
-INSERT INTO sample.users SELECT @first_one := @last_user_id, name, birthday_at, created_at, updated_at FROM users WHERE id = 1;
+INSERT INTO shop.users SELECT @first_one := @last_user_id, name, birthday_at, created_at, updated_at FROM users WHERE id = 1;
 
-INSERT INTO sample.users SELECT * FROM users WHERE id=@last_user_id;
+INSERT INTO sample.users SELECT * FROM shop.users WHERE id=@last_user_id;
 
 COMMIT; -- завершение транзакции
