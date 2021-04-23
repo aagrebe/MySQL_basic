@@ -169,6 +169,7 @@ VALUES
   ('6','Шаурма'),('6', 'Закуски'), ('6', 'Напитки')
 ;
 
+
 SELECT * FROM category_of_dishes;
 
 DROP TABLE IF EXISTS dishes;
@@ -199,24 +200,43 @@ SELECT * FROM dishes;
 
 DROP TABLE IF EXISTS orders;
 CREATE TABLE orders (
+  id BIGINT UNSIGNED AUTO_INCREMENT,
   user_id BIGINT UNSIGNED NOT NULL,
   dish_id BIGINT UNSIGNED NOT NULL,
-  PRIMARY KEY (user_id),
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (id),
   CONSTRAINT fk_basket_users FOREIGN KEY (user_id) REFERENCES users (id),
   CONSTRAINT fk_basket_dishes FOREIGN KEY (dish_id) REFERENCES dishes (id)
  );
 
+INSERT INTO orders
+  (user_id, dish_id)
+VALUES 
+  ('1', '3'), ('2', '5'), ('3', '6'), ('4', '2'), ('5', '1'), ('6', '4')
+ ;
+
+SELECT * FROM orders;
+
 DROP TABLE IF EXISTS comment;
 CREATE TABLE comment ( 
+  id BIGINT UNSIGNED AUTO_INCREMENT,
   deliver_id BIGINT UNSIGNED NOT NULL,
-  order_id  BIGINT UNSIGNED NOT NULL
-  auther_name VARCHAR(145) NOT NULL,
+  auther_id BIGINT UNSIGNED NOT NULL,
   txt TEXT DEFAULT NULL,
-  created_at CURRENT_TIMESTAMP,
-  stars_type enum('1', '2', '3', '4', '5') DEFAULT '1',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  stars_type enum('0','1', '2', '3', '4', '5') DEFAULT '0',
   KEY stars_idx (stars_type),
-  PRIMARY KEY (deliver_id),
+  PRIMARY KEY (id),
   CONSTRAINT fk_comment_delivers FOREIGN KEY (deliver_id) REFERENCES delivers (id),
-  CONSTRAINT fk_comment_orders FOREIGN KEY (order_id) REFERENCES orders (id),
-  CONSTRAINT fk_comment_users FOREIGN KEY (auther_name) REFERENCES users (first_name)
+  CONSTRAINT fk_comment_users FOREIGN KEY (auther_id) REFERENCES users (id)
 );
+
+INSERT INTO comment
+(deliver_id, auther_id, txt, stars_type)
+VALUES 
+('3', '1', 'Было невкусно', '2'),
+('5', '2', 'Неплохо, но все остыло :(', '3'),
+('1', '5', 'Все супер! приду сюда снова!', DEFAULT)
+;
+
+SELECT * FROM comment;
